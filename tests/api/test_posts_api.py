@@ -10,13 +10,14 @@ def test_get_post():
     assert response.status_code == 200
 
     data = response.json()
+    assert isinstance(data, dict), "Expected the response body to be a JSON object"
 
     assert data["id"] == 1
     assert data["userId"] == 1
     assert isinstance(data["title"], str)
-    assert data["title"] != ""
+    assert data["body"] != ""
     assert isinstance(data["body"], str)
-    assert isinstance(data, dict)
+    
 
 def test_get_nonexistent_post():
     url = "https://jsonplaceholder.typicode.com/posts/999999"
@@ -42,4 +43,8 @@ def test_get_posts_by_user_id(user_id):
     assert len(posts) > 0
 
     for post in posts:
+        assert isinstance(post, dict)
+        assert "id" in post
+        assert "title" in post
+        assert "body" in post
         assert post["userId"] == user_id
