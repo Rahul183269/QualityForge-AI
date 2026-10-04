@@ -1,4 +1,5 @@
 import requests
+import pytest
 
 
 def test_get_post():
@@ -23,3 +24,22 @@ def test_get_nonexistent_post():
     response = requests.get(url, timeout=10)
 
     assert response.status_code == 404
+
+
+@pytest.mark.parametrize("user_id", [1, 2, 3])
+def test_get_posts_by_user_id(user_id):
+    response = requests.get(
+        "https://jsonplaceholder.typicode.com/posts",
+        params={"userId": user_id},
+        timeout=10
+    )
+
+    assert response.status_code == 200
+
+    posts = response.json()
+
+    assert isinstance(posts, list)
+    assert len(posts) > 0
+
+    for post in posts:
+        assert post["userId"] == user_id
