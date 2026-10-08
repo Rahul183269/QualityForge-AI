@@ -2,7 +2,7 @@ import requests
 import pytest
 
 
-def test_get_post():
+def test_get_post(api_session):
     url = "https://jsonplaceholder.typicode.com/posts/1"
 
     headers = {
@@ -10,7 +10,11 @@ def test_get_post():
         "Accept": "application/json"
     }
 
-    response = requests.get(url, headers=headers, timeout=10)
+    response = api_session.get(
+        url,
+        headers=headers, 
+        timeout=10
+    )
 
     assert response.status_code == 200
     assert response.headers["Content-Type"].startswith("application/json")
@@ -25,10 +29,10 @@ def test_get_post():
     assert isinstance(data["body"], str)
     assert data["body"] != ""
 
-def test_get_nonexistent_post():
+def test_get_nonexistent_post(api_session):
     url = "https://jsonplaceholder.typicode.com/posts/999999"
 
-    response = requests.get(url, timeout=10)
+    response = api_session.get(url, timeout=10)
     assert response.status_code == 404
 
     data = response.json()
