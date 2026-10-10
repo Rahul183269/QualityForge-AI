@@ -1,5 +1,6 @@
 import requests
 import pytest
+from src.api_client import APIClient
 
 
 def test_get_post(api_session):
@@ -86,3 +87,16 @@ def test_get_post_with_invalid_id():
     data = response.json()
 
     assert data == {}
+
+
+
+def test_api_client_get_post():
+    client = APIClient("https://jsonplaceholder.typicode.com")
+
+    try:
+        response = client.get("/posts/1")
+
+        assert response.status_code == 200
+        assert response.json()["id"] == 1
+    finally:
+        client.session.close()
