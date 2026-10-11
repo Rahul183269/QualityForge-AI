@@ -100,3 +100,53 @@ def test_api_client_get_post():
         assert response.json()["id"] == 1
     finally:
         client.session.close()
+
+
+
+def test_post_has_expected_json_fields(api_session):
+    response = api_session.get(
+        "https://jsonplaceholder.typicode.com/posts/1",
+        timeout=10,
+    )
+
+    assert response.status_code == 200
+
+    post = response.json()
+
+    expected_fields = {"userId", "id", "title", "body"}
+
+    assert expected_fields.issubset(post.keys())
+
+
+
+def test_post_has_expected_field_types(api_session):
+    response = api_session.get(
+        "https://jsonplaceholder.typicode.com/posts/1",
+        timeout=10,
+    )
+
+    assert response.status_code == 200
+
+    post = response.json()
+
+    assert isinstance(post["userId"], int)
+    assert isinstance(post["id"], int)
+    assert isinstance(post["title"], str)
+    assert isinstance(post["body"], str)
+
+
+
+def test_post_has_valid_field_values(api_session):
+    response = api_session.get(
+        "https://jsonplaceholder.typicode.com/posts/1",
+        timeout=10,
+    )
+
+    assert response.status_code == 200
+
+    post = response.json()
+
+    assert post["id"] > 0
+    assert post["userId"] > 0
+    assert post["title"].strip() != ""
+    assert post["body"].strip() != ""
