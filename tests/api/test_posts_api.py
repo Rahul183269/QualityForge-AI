@@ -43,7 +43,13 @@ def test_get_nonexistent_post(api_session):
     assert data== {}
 
 
-@pytest.mark.parametrize("user_id", [1, 2, 3])
+VALID_USER_IDS = [
+    pytest.param(1, id="first_user"),
+    pytest.param(2, id="second_user"),
+    pytest.param(3, id="third_user"),
+]
+
+@pytest.mark.parametrize("user_id", VALID_USER_IDS)
 def test_get_posts_by_user_id(user_id):
     response = requests.get(
         "https://jsonplaceholder.typicode.com/posts",
