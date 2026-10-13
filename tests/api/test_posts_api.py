@@ -1,5 +1,8 @@
 import requests
 import pytest
+import json
+from pathlib import Path
+from jsonschema import validate
 from src.api_client import APIClient
 
 
@@ -150,3 +153,26 @@ def test_post_has_valid_field_values(api_session):
     assert post["userId"] > 0
     assert post["title"].strip() != ""
     assert post["body"].strip() != ""
+
+
+def test_post_response_matches_schema(api_session):
+    response = api_session.get(
+        "https://jsonplaceholder.typicode.com/posts/1",
+        timeout=10,
+    )
+
+    assert response.status_code == 200
+
+    post = response.json()
+
+    schema_path = (
+        Path(__file__).resolve().parents[2]
+        / "test_data"
+        / "schemas"
+        / "post_schema.json"
+    )
+
+    with schema_path.open(encoding="utf-8") as schema_file:
+        schema = json.load(schema_file)
+
+    validate(instance=post, schema=schema)
