@@ -1,6 +1,7 @@
 import requests
 import pytest
 import json
+from unittest.mock import Mock
 from pathlib import Path
 from jsonschema import validate
 from src.api_client import APIClient
@@ -182,3 +183,30 @@ def test_post_response_matches_schema(api_session):
         schema = json.load(schema_file)
 
     validate(instance=post, schema=schema)
+
+
+
+def test_api_client_handles_timeout():
+    client = APIClient("https://example.com")
+    client.session.get = Mock(
+        side_effect=requests.exceptions.Timeout
+    )
+
+    try:
+        with pytest.raises(requests.exceptions.Timeout):
+            client.get("/posts/1")
+    finally:
+        client.session.close()
+
+
+def test_api_client_handles_connection_error():
+    client = APIClient("https://example.com")
+    client.session.get = Mock(
+        side_effect=requests.exceptions.ConnectionError
+    )
+
+    try:
+        with pytest.raises(requests.exceptions.ConnectionError):
+            client.get("/posts/1")
+    finally:
+        client.session.close()
