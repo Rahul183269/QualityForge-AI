@@ -1,6 +1,7 @@
 import pytest
 from src.validation import is_valid_quantity
 from src.validation import is_valid_price
+from src.validation import is_success
 
 @pytest.mark.parametrize(
     "quantity, expected",
@@ -31,3 +32,19 @@ def test_quantity_boundaries(quantity, expected):
 def test_price_boundaries(price, expected):
     assert is_valid_price(price) is expected
 
+
+
+
+@pytest.mark.parametrize(
+    "status_code, expected",
+    [
+        (200, True),
+        (201, True),
+        (299, True),
+        (300, False),
+        (404, False),
+        (500, False),
+    ],
+)
+def test_is_success(status_code, expected):
+    assert is_success(status_code) is expected
