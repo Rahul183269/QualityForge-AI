@@ -40,6 +40,7 @@ def test_price_boundaries(price, expected):
     [
         (200, True),
         (201, True),
+        (204, True),
         (299, True),
         (300, False),
         (404, False),
