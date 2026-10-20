@@ -24,3 +24,6 @@ class APIClient:
         except requests.exceptions.ConnectionError:
             print(f"Could not connect to: {url}")
             raise
+
+    def close(self):
+        self.session.close()

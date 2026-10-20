@@ -109,7 +109,7 @@ def test_api_client_get_post():
         assert response.status_code == 200
         assert response.json()["id"] == 1
     finally:
-        client.session.close()
+        client.close()
 
 
 
@@ -196,7 +196,7 @@ def test_api_client_handles_timeout():
         with pytest.raises(requests.exceptions.Timeout):
             client.get("/posts/1")
     finally:
-        client.session.close()
+        client.close()
 
 
 def test_api_client_handles_connection_error():
@@ -209,4 +209,4 @@ def test_api_client_handles_connection_error():
         with pytest.raises(requests.exceptions.ConnectionError):
             client.get("/posts/1")
     finally:
-        client.session.close()
+        client.close()
