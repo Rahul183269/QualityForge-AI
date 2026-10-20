@@ -1,9 +1,10 @@
-
 import requests
+
+from src.config import API_BASE_URL
 
 
 class APIClient:
-    def __init__(self, base_url, timeout=10):
+    def __init__(self, base_url=API_BASE_URL, timeout=10):
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self.session = requests.Session()
@@ -12,12 +13,9 @@ class APIClient:
             "Accept": "application/json"
         })
 
-
-    
-
     def get(self, endpoint):
         url = f"{self.base_url}/{endpoint.lstrip('/')}"
-        
+
         try:
             return self.session.get(url, timeout=self.timeout)
         except requests.exceptions.Timeout:
