@@ -42,3 +42,43 @@ def test_homepage_message():
 
         finally:
             browser.close()
+
+
+def test_form_interaction():
+    with sync_playwright() as playwright:
+        browser = playwright.chromium.launch()
+        page = browser.new_page()
+
+        try:
+            page.set_content("""
+                <form>
+                    <label for="username">Username</label>
+                    <input id="username" name="username">
+                    <button type="submit">Submit</button>
+                </form>
+                <p id="result"></p>
+
+                <script>
+                    document.querySelector("form").addEventListener(
+                        "submit", function(event) {
+                            event.preventDefault();
+                            document.querySelector("#result").textContent =
+                                "Form submitted successfully";
+                        }
+                    );
+                </script>
+            """)
+
+            username = page.get_by_label("Username")
+            username.fill("testuser")
+
+            expect(username).to_have_value("testuser")
+
+            page.get_by_role("button", name="Submit").click()
+
+            expect(
+                page.get_by_text("Form submitted successfully")
+            ).to_be_visible()
+
+        finally:
+            browser.close()
