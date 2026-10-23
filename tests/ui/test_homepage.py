@@ -18,6 +18,9 @@ def test_learn_more_link():
                 "href",
                 "https://iana.org/help/example-domains",
             )
+
+            link.click()
+            page.wait_for_url("https://www.iana.org/help/example-domains")
             
         finally:
             browser.close()
