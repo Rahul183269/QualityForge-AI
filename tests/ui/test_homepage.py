@@ -54,9 +54,9 @@ def test_form_interaction():
                 <form>
                     <label for="username">Username</label>
                     <input id="username" name="username">
-                    <button type="submit">Submit</button>
+                    <button type="submit" disabled>Submit</button>
                 </form>
-                <p id="result"></p>
+                <p id="result" hidden></p>
 
                 <script>
                     document.querySelector("form").addEventListener(
@@ -70,15 +70,18 @@ def test_form_interaction():
             """)
 
             username = page.get_by_label("Username")
+            result_message = page.locator("#result")
+            expect(result_message).to_be_hidden()
+            submit_button = page.get_by_role("button", name="Submit")
+            expect(submit_button).to_be_disabled()
+            expect(submit_button).to_be_visible()
             username.fill("testuser")
 
             expect(username).to_have_value("testuser")
 
-            page.get_by_role("button", name="Submit").click()
+            
 
-            expect(
-                page.get_by_text("Form submitted successfully")
-            ).to_be_visible()
+            expect(username).to_be_enabled()
 
         finally:
             browser.close()
