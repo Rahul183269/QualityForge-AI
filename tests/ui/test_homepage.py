@@ -72,6 +72,7 @@ def test_form_interaction():
             username = page.get_by_label("Username")
             result_message = page.locator("#result")
             expect(result_message).to_be_hidden()
+            expect(username).to_be_visible()
             submit_button = page.get_by_role("button", name="Submit")
             expect(submit_button).to_be_disabled()
             expect(submit_button).to_be_visible()
