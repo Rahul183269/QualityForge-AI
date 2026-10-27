@@ -1,3 +1,4 @@
 pytest
 requests
 jsonschema==4.26.0
+playwright
