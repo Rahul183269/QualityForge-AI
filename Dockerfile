@@ -19,4 +19,5 @@ COPY pytest.ini .
 
 RUN mkdir -p reports
 
-CMD ["python", "-m", "pytest", "-v", "--junitxml=reports/junit.xml"]
+
+CMD ["python", "-m", "pytest", "-v", "--junitxml=reports/junit.xml", "--html=reports/day41-test-report.html", "--self-contained-html"]
