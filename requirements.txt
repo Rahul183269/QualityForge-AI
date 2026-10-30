@@ -3,3 +3,4 @@ requests
 jsonschema==4.26.0
 playwright
 python-dotenv
+pytest-html==4.2.0

@@ -26,13 +26,19 @@ jobs:
           pip install -r requirements.txt
           python -m playwright install --with-deps chromium firefox
 
-      - name: Run pytest and generate report
-        run: python -m pytest -v --junitxml=reports/junit.xml
+      - name: Run tests and generate reports
+        run: |
+          python -m pytest -v \
+            --junitxml=reports/junit.xml \
+            --html=reports/day41-test-report.html \
+            --self-contained-html
 
-      - name: Upload test results
+      - name: Upload test reports
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: junit-test-results
-          path: reports/junit.xml
+          name: qualityforge-test-reports
+          path: |
+            reports/junit.xml
+            reports/day41-test-report.html
           if-no-files-found: warn
