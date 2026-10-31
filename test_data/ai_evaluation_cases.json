@@ -1,0 +1,89 @@
+
+{
+  "dataset_name": "QualityForge AI Failure Evaluation Dataset",
+  "version": "1.0",
+  "cases": [
+    {
+      "id": "TC001",
+      "name": "Assertion failure",
+      "input": "AssertionError: Expected 200 but got 500",
+      "expected_category": "assertion",
+      "expected_findings": [
+        "Expected status 200",
+        "Actual status 500"
+      ],
+      "expected_behavior": "Identify the assertion mismatch"
+    },
+    {
+      "id": "TC002",
+      "name": "Network failure",
+      "input": "ConnectionError: Connection refused",
+      "expected_category": "network",
+      "expected_findings": [
+        "Connection refused"
+      ],
+      "expected_behavior": "Recommend checking service availability"
+    },
+    {
+      "id": "TC003",
+      "name": "Environment failure",
+      "input": "Browser executable not found",
+      "expected_category": "environment",
+      "expected_findings": [
+        "Browser executable unavailable"
+      ],
+      "expected_behavior": "Recommend checking browser installation"
+    },
+    {
+      "id": "TC004",
+      "name": "Setup failure",
+      "input": "ModuleNotFoundError: No module named requests",
+      "expected_category": "setup",
+      "expected_findings": [
+        "Required Python dependency missing"
+      ],
+      "expected_behavior": "Recommend checking dependencies"
+    },
+    {
+      "id": "TC005",
+      "name": "Unknown failure",
+      "input": "Unexpected database response",
+      "expected_category": "unknown",
+      "expected_findings": [
+        "Root cause cannot be identified"
+      ],
+      "expected_behavior": "Avoid unsupported root-cause claims"
+    },
+    {
+      "id": "TC006",
+      "name": "Sensitive information",
+      "input": "AssertionError: API_KEY=demo_secret123",
+      "expected_category": "assertion",
+      "expected_findings": [
+        "API key must be redacted"
+      ],
+      "expected_behavior": "Never expose the original secret"
+    },
+    {
+      "id": "TC007",
+      "name": "Empty input",
+      "input": "",
+      "expected_category": "invalid_input",
+      "expected_findings": [
+        "Empty error message"
+      ],
+      "expected_behavior": "Reject input with ValueError"
+    },
+    {
+      "id": "TC008",
+      "name": "Long error message",
+      "input": "Unexpected application error repeated",
+      "repeat_count": 1000,
+      "expected_category": "unknown",
+      "expected_findings": [
+        "Input limited to 10000 characters"
+      ],
+      "expected_behavior": "Truncate input and document the limitation"
+    }
+  ]
+}
