@@ -3,6 +3,11 @@ import pytest
 
 from src.ai_failure_summarizer import summarize_failure
 
+from src.ai_failure_summarizer import (
+    summarize_failure,
+    redact_sensitive_data,
+)
+
 
 def test_required_output_fields():
     result = summarize_failure(
@@ -60,3 +65,25 @@ def test_unsupported_root_cause_is_not_confirmed():
     assert result["failure_category"] == "unknown"
     assert "not confirmed" in result["limitations"]
     assert result["confidence"] == "Low"
+
+def test_email_is_redacted():
+    message = "Login failed for rahul@example.com"
+
+    result = redact_sensitive_data(message)
+
+    assert "rahul@example.com" not in result
+    assert "[REDACTED_EMAIL]" in result
+
+
+def test_multiple_sensitive_values_are_redacted():
+    message = (
+        "email=rahul@example.com "
+        "API_KEY=demo_secret123 "
+        "Bearer abc123token"
+    )
+
+    result = redact_sensitive_data(message)
+
+    assert "rahul@example.com" not in result
+    assert "demo_secret123" not in result
+    assert "abc123token" not in result
