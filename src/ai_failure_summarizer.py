@@ -1,5 +1,31 @@
 
+import re
+
 from scripts.failure_analyzer import classify_failure
+
+
+MAX_LOG_LENGTH = 10000
+
+
+def redact_sensitive_data(message):
+    """Remove common secrets from error messages."""
+
+    patterns = [
+        (
+            r"(?i)(api[_-]?key|password|token|secret)"
+            r"(\s*[:=]\s*)[^\s,;]+",
+            r"\1\2[REDACTED]",
+        ),
+        (
+            r"(?i)Bearer\s+[A-Za-z0-9._~+/=-]+",
+            "Bearer [REDACTED]",
+        ),
+    ]
+
+    for pattern, replacement in patterns:
+        message = re.sub(pattern, replacement, message)
+
+    return message
 
 
 def summarize_failure(
@@ -11,9 +37,14 @@ def summarize_failure(
     if not isinstance(error_message, str) or not error_message.strip():
         raise ValueError("A valid error message is required")
 
-    category = classify_failure(error_message)
+    sanitized_message = redact_sensitive_data(error_message.strip())
 
-    evidence = [error_message.strip()]
+    was_truncated = len(sanitized_message) > MAX_LOG_LENGTH
+    sanitized_message = sanitized_message[:MAX_LOG_LENGTH]
+
+    category = classify_failure(sanitized_message)
+
+    evidence = [sanitized_message]
 
     if expected_result is not None:
         evidence.append(f"Expected: {expected_result}")
@@ -74,6 +105,14 @@ def summarize_failure(
         f"{category.title()} failure."
     )
 
+    limitations = (
+        "This is a rule-based analysis. "
+        "The root cause is not confirmed."
+    )
+
+    if was_truncated:
+        limitations += " The input log was truncated to 10000 characters."
+
     return {
         "test_name": test_name,
         "failure_category": category,
@@ -82,10 +121,7 @@ def summarize_failure(
         "possible_causes": possible_causes[category],
         "recommended_steps": recommended_steps[category],
         "confidence": "Low",
-        "limitations": (
-            "This is a rule-based analysis. "
-            "The root cause is not confirmed."
-        ),
+        "limitations": limitations,
     }
 
 
